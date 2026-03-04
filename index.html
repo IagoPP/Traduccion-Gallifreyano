@@ -2,66 +2,124 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Gallifreyan Translator Redirect</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallifreyan Portal</title>
+
 <style>
-    body {
-        background-color: #0f0f1a;
-        color: #ffffff;
-        font-family: Arial, sans-serif;
-        text-align: center;
-        padding: 20% 10%;
-    }
-    button {
-        background-color: #1f3cff;
-        color: white;
-        border: none;
-        padding: 18px 28px;
-        font-size: 18px;
-        cursor: pointer;
-        border-radius: 10px;
-        width: 100%;
-        max-width: 300px;
-    }
-    button:active {
-        background-color: #3f5cff;
-    }
-    textarea {
-        margin-top: 20px;
-        width: 100%;
-        max-width: 400px;
-        height: 80px;
-        font-size: 16px;
-    }
+body {
+    margin: 0;
+    overflow: hidden;
+    background: radial-gradient(circle at center, #0a0f2a 0%, #000 70%);
+    font-family: Arial, sans-serif;
+    color: white;
+    text-align: center;
+}
+
+.container {
+    position: relative;
+    z-index: 2;
+    top: 40vh;
+}
+
+button {
+    background: #1f3cff;
+    border: none;
+    padding: 18px 30px;
+    font-size: 18px;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 0 20px #1f3cff;
+    transition: 0.3s;
+}
+
+button:hover {
+    box-shadow: 0 0 35px #3f5cff;
+}
+
+/* Animated Circular Background */
+.circle {
+    position: absolute;
+    border: 2px solid rgba(100,150,255,0.4);
+    border-radius: 50%;
+    animation: rotate linear infinite;
+}
+
+.circle:nth-child(1) {
+    width: 300px;
+    height: 300px;
+    top: 50%;
+    left: 50%;
+    margin-left: -150px;
+    margin-top: -150px;
+    animation-duration: 30s;
+}
+
+.circle:nth-child(2) {
+    width: 450px;
+    height: 450px;
+    top: 50%;
+    left: 50%;
+    margin-left: -225px;
+    margin-top: -225px;
+    animation-duration: 60s;
+    animation-direction: reverse;
+}
+
+.circle:nth-child(3) {
+    width: 600px;
+    height: 600px;
+    top: 50%;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: -300px;
+    animation-duration: 120s;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 </style>
 </head>
+
 <body>
 
-<h2>Translate into Gallifreyan</h2>
-<p>Tap the button below. Your phrase will copy automatically.</p>
+<div class="circle"></div>
+<div class="circle"></div>
+<div class="circle"></div>
 
-<button onclick="copyAndOpen()">Copy & Open Translator</button>
-
-<textarea id="fallbackText" readonly>
-Honor tenian los que murieron ayer
-</textarea>
+<div class="container">
+    <h2>Enter the Translation Matrix</h2>
+    <p>Tap below to transmit the message.</p>
+    <button onclick="activate()">Translate</button>
+</div>
 
 <script>
-const phrase = "Honor tenian los que murieron ayer";
+// Phrase stored encoded (Base64)
+const encoded = "SG9ub3IgdGVuaWFuIGxvcyBxdWUgbXVyaWVyb24gYXllcg==";
 
-async function copyAndOpen() {
+// Decode only when needed
+function getPhrase() {
+    return atob(encoded);
+}
+
+async function activate() {
+    const phrase = getPhrase();
+
     try {
         await navigator.clipboard.writeText(phrase);
-        alert("Phrase copied! Paste it in the translator.");
     } catch (err) {
-        // Fallback for older/mobile browsers
-        const textArea = document.getElementById("fallbackText");
-        textArea.select();
+        const temp = document.createElement("textarea");
+        temp.value = phrase;
+        document.body.appendChild(temp);
+        temp.select();
         document.execCommand("copy");
-        alert("Phrase selected. Tap copy if it didn't copy automatically.");
+        document.body.removeChild(temp);
     }
 
-    window.open("https://www.doctorwho.tv/gallifreyan-translator", "_blank");
+    // Open in same tab to avoid popup blocking
+    window.location.href = "https://www.doctorwho.tv/gallifreyan-translator";
 }
 </script>
 
